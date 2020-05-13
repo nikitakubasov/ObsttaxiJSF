@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="ObsttaxiJSF">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="primefaces-8.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/ObsttaxiJSF/WebContent/WEB-INF/lib/primefaces-8.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="ObsttaxiJSF"/>
         <property name="java-output-path" value="/ObsttaxiJSF/WebContent/WEB-INF/classes"/>
     </wb-module>
