@@ -5,8 +5,21 @@
     xmlns:p="http://primefaces.org/ui">
 <h:head></h:head>
 <h:body>
-    <h:outputLabel value="#{testBean.helloText}"/>
-    <h:outputLabel value="Das ist ein beispielhafter Commit"/>
-    <h:outputLabel value="Das ist ein weiterer beispielhafter Commit"/>
+
+	<h:outputText value="ObstTaxi Dortmund" 
+	style="font-size: #{DCProfileTabGeneralController.editable ? '12px' : '30px' }"/>
+	<br/><br/>
+		
+	<h:form>
+		<h:outputText value="Bestellung abgeben:"/>
+		<h:panelGrid columns="2">
+			<h:outputLabel for="obst">Obst:</h:outputLabel>
+			<h:inputText id="obst"/>
+			<h:outputLabel for="anzahl">Anzahl:</h:outputLabel>
+			<h:inputText id="anzahl"/>
+		</h:panelGrid>
+	</h:form>
+	<h:commandButton value="Noch ein Produkt" />
+	<h:commandButton value="Fertig" />
 </h:body>
 </html>
