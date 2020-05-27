@@ -31,3 +31,8 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 /testdb.db
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/ObsttaxiJSF.iml
