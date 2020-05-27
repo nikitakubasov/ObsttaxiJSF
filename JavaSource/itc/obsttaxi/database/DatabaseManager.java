@@ -17,7 +17,7 @@ public class DatabaseManager {
 	
 	private static boolean isHandled;
 
-	private static final String DB_PATH = "D:/Java/testdb.db";//System.getProperty("user.dir") + "/" + "testdb.db";
+	private static final String DB_PATH = System.getProperty("user.dir") + "/" + "testdb.db";
 
 	static {
 		try {
