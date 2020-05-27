@@ -12,47 +12,51 @@
 	
 	<h:outputText value="Angebot:"
 	style="font-size: #{DCProfileTabGeneralController.editable ? '12px' : '18px' }"/>
-	<h:panelGrid columns="2">
-		<h:outputLabel> Banane</h:outputLabel>
-		<h:outputLabel> 1€/kg</h:outputLabel>
-		<h:outputLabel> Apfel</h:outputLabel>
-		<h:outputLabel> 2€/kg</h:outputLabel>
-		<h:outputLabel> Birne</h:outputLabel>
-		<h:outputLabel> 2€/kg</h:outputLabel>
-		<h:outputLabel> Orangen</h:outputLabel>
-		<h:outputLabel> 2€/kg</h:outputLabel>
-		<h:outputLabel> Granatapfel</h:outputLabel>
-		<h:outputLabel> 1€/kg</h:outputLabel>
-	</h:panelGrid>
-	<br/><br/>
+	
 		
 	<h:form>
-		<h:outputText value="Bestellung abgeben:"
-		style="font-size: #{DCProfileTabGeneralController.editable ? '12px' : '18px' }"/>
-		<h:panelGrid columns="2">
-			<h:outputLabel for="obst">Obst:</h:outputLabel>
-			<h:inputText id="obst"/>
-			<h:outputLabel for="anzahl">Anzahl:</h:outputLabel>
-			<h:inputText id="anzahl"/>
-		</h:panelGrid>
-	</h:form>
-	<h:commandButton value="Noch ein Produkt" />
-	<h:commandButton value="Genug Obst" />
-	<br/><br/><br/>
 	
-	<h:form>
+	<h:panelGrid columns="3">
+		<h:outputLabel> Obst</h:outputLabel>
+		<h:outputLabel> Preis</h:outputLabel>
+		<h:outputLabel> Anzahl</h:outputLabel>
+		<h:outputLabel> Banane</h:outputLabel>
+		<h:outputLabel> 1€/kg</h:outputLabel>
+		<h:inputText id="anzahlBanane" value="#{bestellung.anzahlBanane}" converterMessage="Nur Ziffern sind erlaubt." />
+		<h:outputLabel> Apfel</h:outputLabel>
+		<h:outputLabel> 2€/kg</h:outputLabel>
+		<h:inputText id="anzahlApfel" value="#{bestellung.anzahlApfel}" converterMessage="Nur Ziffern sind erlaubt."/>
+		<h:outputLabel> Birne</h:outputLabel>
+		<h:outputLabel> 2€/kg</h:outputLabel>
+		<h:inputText id="anzahlBirne" value="#{bestellung.anzahlBirne}" converterMessage="Nur Ziffern sind erlaubt."/>
+		<h:outputLabel> Orangen</h:outputLabel>
+		<h:outputLabel> 2€/kg</h:outputLabel>
+		<h:inputText id="anzahlOrangen" value="#{bestellung.anzahlOrangen}" converterMessage="Nur Ziffern sind erlaubt."/>
+		<h:outputLabel> Granatapfel</h:outputLabel>
+		<h:outputLabel> 1€/kg</h:outputLabel>
+		<h:inputText id="anzahlGranatapfel" value="#{bestellung.anzahlGranatapfel}" converterMessage="Nur Ziffern sind erlaubt."/>
+	</h:panelGrid>
+	<br/><br/>	
+	
 		<h:outputText value="Lieferadresse angeben:"
 		style="font-size: #{DCProfileTabGeneralController.editable ? '12px' : '18px' }"/>
-		<h:panelGrid columns="2">
+		<h:panelGrid columns="3">
 			<h:outputLabel for="nameunachname">Vor- und Nachname:</h:outputLabel>
-			<h:inputText id="nameunachname"/>
-			<h:outputLabel for="straßeuhausnr">Straße und Hausnummer:</h:outputLabel>
-			<h:inputText id="straßeuhausnr"/>
+			<h:inputText id="nameunachname" value="#{bestellung.vollerName}" required="true" requiredMessage="Dieses Feld ist ein Pflichtfeld"/>
+			<h:message for="nameunachname" id="msg1"/>
+			
+			<h:outputLabel for="strassenhausnr">Straße und Hausnummer:</h:outputLabel>
+			<h:inputText id="strassenhausnr" value="#{bestellung.adresse}" required="true" requiredMessage="Dieses Feld ist ein Pflichtfeld"/>
+			<h:message for="strassenhausnr" id="msg2"/>
+			
 			<h:outputLabel for="plz">Postleitzahl:</h:outputLabel>
-			<h:inputText id="postleitzahl"/>
+			<h:inputText id="postleitzahl" value="#{bestellung.postleitzahl}" required="true" requiredMessage="Dieses Feld ist ein Pflichtfeld"/>
+			<h:message for="postleitzahl" id="msg3"/>
+			
 		</h:panelGrid>
+		<h:commandButton value="Bestellung abschließen" action="#{bestellung.bestellen}" />
+		
 	</h:form>
-	<h:commandButton value="Bestellung abschließen" />
 	<br/><br/>
 	
 	<h:outputText value="Hinweis: Lieferungen ausschließlich innerhalb der Stadt Dortmund möglich!"/>

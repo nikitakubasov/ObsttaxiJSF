@@ -56,7 +56,7 @@ public class DatabaseManager {
     public Obst GetObst(int id) throws SQLException {
     	Obst obst = new Obst();
     	
-        Statement stmt = databaseManager.connection.createStatement();
+        Statement stmt = DatabaseManager.connection.createStatement();
     	
         ResultSet rs = stmt.executeQuery("SELECT * FROM obst WHERE id ==" + id);
         rs.next();
@@ -85,18 +85,18 @@ public class DatabaseManager {
             PreparedStatement ps = connection
                     .prepareStatement("INSERT INTO obst VALUES (?, ?, ?);");
 
-            ps.setString(1, "Leckere Banane direkt aus Costa Rica");
-            ps.setFloat(2, 1.5f);
+            ps.setString(1, "Banane");
+            ps.setFloat(2, 1f);
             ps.setInt(3, 1);
             ps.addBatch();
             
-            ps.setString(1, "Knuspriger Apfel (grün)");
-            ps.setFloat(2, 1.25f);
+            ps.setString(1, "Apfel");
+            ps.setFloat(2, 2f);
             ps.setInt(3, 2);
             ps.addBatch();
             
-            ps.setString(1, "Bunter Obstkorb voller Überraschungen");
-            ps.setFloat(2, 5f);
+            ps.setString(1, "Birne");
+            ps.setFloat(2, 1f);
             ps.setInt(3, 3);
             ps.addBatch();
 
