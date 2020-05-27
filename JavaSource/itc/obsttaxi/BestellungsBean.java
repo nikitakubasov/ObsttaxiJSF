@@ -4,6 +4,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
 
+import itc.obsttaxi.database.DatabaseManager;
+
 @SessionScoped
 @ManagedBean(name = "bestellung")
 public class BestellungsBean {
@@ -12,6 +14,39 @@ public class BestellungsBean {
 	private int anzahlBanane, anzahlApfel, anzahlBirne, anzahlGranatapfel, anzahlOrangen, postleitzahl;
 	
 	public String bestellen() {
+		
+		if(!DatabaseManager.isHandled()) {
+			DatabaseManager.initDBConnection();
+			DatabaseManager.handleDB();
+		}
+		
+		int kundenid = DatabaseManager.GetNewKundenid();
+		int bestellungsid = DatabaseManager.GetNewBestellungsid();
+		
+		DatabaseManager.AddKunde(vollerName, adresse, postleitzahl, kundenid);
+		
+		DatabaseManager.AddBestellung(kundenid, bestellungsid);
+		
+		if(anzahlBanane > 0) {
+			DatabaseManager.AddBestellPosition(kundenid, 1, anzahlBanane);
+		}
+		
+		if(anzahlApfel > 0) {
+			DatabaseManager.AddBestellPosition(kundenid, 2, anzahlApfel);
+		}
+		
+		if(anzahlBirne > 0) {
+			DatabaseManager.AddBestellPosition(kundenid, 3, anzahlBirne);
+		}
+		
+		if(anzahlOrangen > 0) {
+			DatabaseManager.AddBestellPosition(kundenid, 4, anzahlOrangen);
+		}
+		
+		if(anzahlGranatapfel > 0) {
+			DatabaseManager.AddBestellPosition(kundenid, 5, anzahlGranatapfel);
+		}
+		
 		return "finished";
 	}
 	
