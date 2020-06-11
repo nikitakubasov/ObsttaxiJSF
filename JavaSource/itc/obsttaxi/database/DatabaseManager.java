@@ -1,5 +1,6 @@
 package itc.obsttaxi.database;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -10,10 +11,14 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class DatabaseManager {
+import itc.obsttaxi.database.dao.BestellPosition;
+import itc.obsttaxi.database.dao.Bestellung;
+import itc.obsttaxi.database.dao.Kunde;
+import itc.obsttaxi.database.dao.Obst;
 
-	private static final DatabaseManager databaseManager = new DatabaseManager();
-	private static Connection connection;
+public class DatabaseManager {
+	
+	private Connection connection;
 	
 	private static boolean isHandled;
 
@@ -25,64 +30,38 @@ public class DatabaseManager {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-	    System.out.println(DB_PATH);
+
+	    isHandled = new File(DB_PATH).exists();
 	}
 
-	private DatabaseManager() {
+	protected DatabaseManager(Connection connection) {
+		this.connection = connection;
 	}
 
-	public static DatabaseManager getInstance() {
-		return databaseManager;
-	}
-
-	public static void initDBConnection() {
-		
-		try {
-			if (connection != null)
-				return;
-
-			connection = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				try {
-					if (!connection.isClosed() && connection != null) {
-						connection.close();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public static Obst GetObst(int id) throws SQLException {
+	public Obst GetObst(int id) throws SQLException {
 		Obst obst = new Obst();
 
-		Statement stmt = DatabaseManager.connection.createStatement();
+		Statement stmt = connection.createStatement();
 
 		ResultSet rs = stmt.executeQuery("SELECT * FROM obst WHERE id ==" + id);
 		rs.next();
 
 		obst.name = rs.getString("name");
 		obst.preis = rs.getFloat("preis");
+		obst.id = rs.getInt("id");
 
 		rs.close();
 
 		return obst;
 	}
 
-	public static void AddKunde(String vollerName, String adresse, int postleitzahl, int kundenid) {
+	public void AddKunde(Kunde kunde) {
 		try (PreparedStatement ps = connection
 				.prepareStatement("INSERT INTO kunden ('name', 'adresse', 'kundenid') VALUES (?, ?, ?);")) {
 
-			ps.setString(1, vollerName);
-			ps.setString(2, adresse + " " + postleitzahl);
-			ps.setInt(3, kundenid);
+			ps.setString(1, kunde.vollerName);
+			ps.setString(2, kunde.adresse + " " + kunde.plz);
+			ps.setInt(3, kunde.id);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -90,13 +69,13 @@ public class DatabaseManager {
 		}
 	}
 
-	public static void AddBestellung(int kundenId, int bestellungsid) {
+	public void AddBestellung(Bestellung bestellung) {
 		try (PreparedStatement ps = connection
 				.prepareStatement("INSERT INTO bestellungen ('datum', 'kundenid', 'id') VALUES (?, ?, ?);")) {
 
-			ps.setInt(2, kundenId);
+			ps.setInt(2, bestellung.kunde.id);
 			ps.setDate(1, Date.valueOf(LocalDate.now()));
-			ps.setInt(3, bestellungsid);
+			ps.setInt(3, bestellung.bestellungsid);
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -104,12 +83,12 @@ public class DatabaseManager {
 		}
 	}
 
-	public static int GetNewBestellungsid() {
+	public int GetNewBestellungsid() {
 
 		int maxValue = 0;
 
 		try {
-			Statement stmt = DatabaseManager.connection.createStatement();
+			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT MAX(id) FROM bestellungen");
 			if (rs.next()) {
 				maxValue = rs.getInt(1);
@@ -125,12 +104,12 @@ public class DatabaseManager {
 	}
 	
 
-	public static int GetNewKundenid() {
+	public int GetNewKundenid() {
 
 		int maxValue = 0;
 
 		try {
-			Statement stmt = DatabaseManager.connection.createStatement();
+			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT MAX(kundenid) FROM kunden");
 			if (rs.next()) {
 				maxValue = rs.getInt(1);
@@ -145,13 +124,13 @@ public class DatabaseManager {
 		return maxValue + 1;
 	}
 
-	public static void AddBestellPosition(int kundenId, int obstid, int menge) {
+	public void AddBestellPosition(BestellPosition bestellposition) {
 		try (PreparedStatement ps = connection.prepareStatement(
 				"INSERT INTO bestell_positionen ('menge', 'bestellungsid', 'obstid') VALUES (?, ?, ?);")) {
 
-			ps.setInt(1, menge);
-			ps.setInt(2, kundenId);
-			ps.setInt(3, obstid);
+			ps.setInt(1, bestellposition.menge);
+			ps.setInt(2, bestellposition.bestellung.bestellungsid);
+			ps.setInt(3, bestellposition.obst.id);
 
 			ps.executeUpdate();
 
@@ -160,7 +139,10 @@ public class DatabaseManager {
 		}
 	}
 
-	public static void handleDB() {
+	public void handleDB() {
+		
+		if(isHandled) return;
+		
 		try {
 			Statement stmt = connection.createStatement();
 
@@ -215,9 +197,4 @@ public class DatabaseManager {
 		
 		isHandled = true;
 	}
-	
-	public static boolean isHandled() {
-		return isHandled;
-	}
-
 }

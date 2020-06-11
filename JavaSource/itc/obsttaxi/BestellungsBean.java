@@ -1,10 +1,19 @@
 package itc.obsttaxi;
 
+import java.sql.SQLException;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
 
 import itc.obsttaxi.database.DatabaseManager;
+import itc.obsttaxi.database.dao.BestellPosition;
+import itc.obsttaxi.database.dao.Bestellung;
+import itc.obsttaxi.database.dao.Kunde;
+import itc.obsttaxi.dto.BestellPositionDTO;
+import itc.obsttaxi.dto.KundeDTO;
+import itc.obsttaxi.services.BestellungsService;
+import itc.obsttaxi.services.IBestellungsService;
 
 @SessionScoped
 @ManagedBean(name = "bestellung")
@@ -13,39 +22,29 @@ public class BestellungsBean {
 	private String adresse, vollerName;
 	private int anzahlBanane, anzahlApfel, anzahlBirne, anzahlGranatapfel, anzahlOrangen, postleitzahl;
 	
+	private IBestellungsService bestellungsService;
+	
+	public BestellungsBean() {
+		bestellungsService = new BestellungsService();
+	}
+	
+	
 	public String bestellen() {
 		
-		if(!DatabaseManager.isHandled()) {
-			DatabaseManager.initDBConnection();
-			DatabaseManager.handleDB();
-		}
+		KundeDTO kunde = new KundeDTO();
+		kunde.adresse = adresse;
+		kunde.vollerName = vollerName;
+		kunde.plz = postleitzahl;
 		
-		int kundenid = DatabaseManager.GetNewKundenid();
-		int bestellungsid = DatabaseManager.GetNewBestellungsid();
+		BestellPositionDTO[] positionen = new BestellPositionDTO[] {
+			new BestellPositionDTO(1, anzahlBanane),
+			new BestellPositionDTO(2, anzahlApfel),
+			new BestellPositionDTO(3, anzahlBirne),
+			new BestellPositionDTO(4, anzahlGranatapfel),
+			new BestellPositionDTO(5, anzahlOrangen)
+		};
 		
-		DatabaseManager.AddKunde(vollerName, adresse, postleitzahl, kundenid);
-		
-		DatabaseManager.AddBestellung(kundenid, bestellungsid);
-		
-		if(anzahlBanane > 0) {
-			DatabaseManager.AddBestellPosition(kundenid, 1, anzahlBanane);
-		}
-		
-		if(anzahlApfel > 0) {
-			DatabaseManager.AddBestellPosition(kundenid, 2, anzahlApfel);
-		}
-		
-		if(anzahlBirne > 0) {
-			DatabaseManager.AddBestellPosition(kundenid, 3, anzahlBirne);
-		}
-		
-		if(anzahlOrangen > 0) {
-			DatabaseManager.AddBestellPosition(kundenid, 4, anzahlOrangen);
-		}
-		
-		if(anzahlGranatapfel > 0) {
-			DatabaseManager.AddBestellPosition(kundenid, 5, anzahlGranatapfel);
-		}
+		bestellungsService.bestellen(kunde, positionen);
 		
 		return "finished";
 	}
