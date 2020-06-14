@@ -6,6 +6,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
 
+import itc.obsttaxi.BestellPositionFactory.Obst;
 import itc.obsttaxi.database.DatabaseManager;
 import itc.obsttaxi.database.dao.BestellPosition;
 import itc.obsttaxi.database.dao.Bestellung;
@@ -36,13 +37,15 @@ public class BestellungsBean {
 		kunde.vollerName = vollerName;
 		kunde.plz = postleitzahl;
 		
-		BestellPositionDTO[] positionen = new BestellPositionDTO[] {
-			new BestellPositionDTO(1, anzahlBanane),
-			new BestellPositionDTO(2, anzahlApfel),
-			new BestellPositionDTO(3, anzahlBirne),
-			new BestellPositionDTO(4, anzahlGranatapfel),
-			new BestellPositionDTO(5, anzahlOrangen)
-		};
+		BestellPositionFactory factory = new BestellPositionFactory();
+		
+		BestellPositionDTO[] positionen = 
+				factory.addObst(Obst.BANANE, anzahlBanane)
+						.addObst(Obst.APFEL, anzahlApfel)
+						.addObst(Obst.BIRNE, anzahlBirne)
+						.addObst(Obst.GRANATAPFEL, anzahlGranatapfel)
+						.addObst(Obst.ORANGE, anzahlOrangen)
+						.createBestellArray();
 		
 		bestellungsService.bestellen(kunde, positionen);
 		
